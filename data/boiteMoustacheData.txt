@@ -1,19 +1,21 @@
-Tloc mediane value : 83
-Tloc quartile inferieur value : 48
-Tloc quartile superieur value : 124
-Tloc limite inferieur value : 0.000000
-Tloc limite superieur value : 238.000000
+Tloc mediane value : 83.00
+Tloc quartile inferieur value : 47.00
+Tloc quartile superieur value : 125.00
+Tloc limite inferieur value : 0.00
+Tloc limite superieur value : 242.00
 
-Wmc mediane value : 111
-Wmc quartile inferieur value : 58
-Wmc quartile superieur value : 101
-Wmc limite inferieur value : 0.000000
-Wmc limite superieur value : 165.500000
 
-Tassert mediane value : 67
-Tassert quartile inferieur value : 41
-Tassert quartile superieur value : 100
-Tassert limite inferieur value : 0.000000
-Tassert limite superieur value : 188.500000
+Wmc mediane value : 9.00
+Wmc quartile inferieur value : 8.00
+Wmc quartile superieur value : 12.00
+Wmc limite inferieur value : 2.00
+Wmc limite superieur value : 18.00
+
+
+Tassert mediane value : 17.00
+Tassert quartile inferieur value : 10.00
+Tassert quartile superieur value : 32.00
+Tassert limite inferieur value : 0.00
+Tassert limite superieur value : 65.00
 
 
