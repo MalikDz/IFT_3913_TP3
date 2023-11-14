@@ -9,24 +9,24 @@ package ca.umontreal.teamz.data;
 
 public class TestClassMetricsData {
 	private String className;
-	private int tloc, wmc, tassert;
+	private double tloc, wmc, tassert;
 
-	public TestClassMetricsData(String className, int tloc, int wmc, int tassert) {
+	public TestClassMetricsData(String className, double tloc, double wmc, double tassert) {
 		this.tloc = tloc;
 		this.wmc = wmc;
 		this.tassert = tassert;
 		this.className = className;
 	}
 
-	public int getTloc() {
+	public double getTloc() {
 		return tloc;
 	}
 
-	public int getWmc() {
+	public double getWmc() {
 		return wmc;
 	}
 
-	public int getTassert() {
+	public double getTassert() {
 		return tassert;
 	}
 
@@ -36,7 +36,7 @@ public class TestClassMetricsData {
 
 	@Override
 	public String toString() {
-		return String.format("Class name : %s  ,    tloc : %d    ,    wmc : %d    ,    tassert : %d ", className, tloc,
+		return String.format("Class name : %s  ,    tloc : %f    ,    wmc : %f   ,    tassert : %f", className, tloc,
 				wmc, tassert);
 	}
 }
