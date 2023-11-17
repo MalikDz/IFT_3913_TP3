@@ -1,10 +1,14 @@
 package ca.umontreal.teamz;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Collections;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import ca.umontreal.teamz.data.MetricBoxPlotData;
 import ca.umontreal.teamz.data.TestClassMetricsData;
 import ca.umontreal.teamz.utilities.FileManipulation;
 
@@ -22,6 +26,7 @@ public class MustacheBoxCalculator {
 	private static final String TLOC_METRIC_NAME = "Tloc";
 	private static final String TASSERT_METRIC_NAME = "Tassert";
 	private static final String METRICS_DATA_FILE_NAME = "jfreechart-test-stats.csv";
+
 	private static final Comparator<TestClassMetricsData> TLOC_COMPARATOR = new Comparator<TestClassMetricsData>() {
 		@Override
 		public int compare(TestClassMetricsData o1, TestClassMetricsData o2) {
@@ -43,18 +48,44 @@ public class MustacheBoxCalculator {
 
 	public static void main(String[] args) throws IOException {
 		List<TestClassMetricsData> testClassesMetricsData = parseMetrics(METRICS_DATA_FILE_NAME);
+		// Task 1 : calculating box plot data
 		Collections.sort(testClassesMetricsData, TLOC_COMPARATOR);
-		printMoustacheBoxData(testClassesMetricsData, TLOC_METRIC_NAME);
+		MetricBoxPlotData tlocBoxPlotData = printMoustacheBoxData(testClassesMetricsData, TLOC_METRIC_NAME);
+		System.out.println(tlocBoxPlotData);
 
 		Collections.sort(testClassesMetricsData, WMC_COMPARATOR);
-		// testClassesMetricsData.stream().forEach(o -> System.out.println(o));
-		printMoustacheBoxData(testClassesMetricsData, WMC_METRIC_NAME);
+		MetricBoxPlotData wmcBoxPlotData = printMoustacheBoxData(testClassesMetricsData, WMC_METRIC_NAME);
+		System.out.println(wmcBoxPlotData);
 
 		Collections.sort(testClassesMetricsData, TASSERT_COMPARATOR);
-		printMoustacheBoxData(testClassesMetricsData, TASSERT_METRIC_NAME);
+		MetricBoxPlotData tassertBoxPlotData = printMoustacheBoxData(testClassesMetricsData, TASSERT_METRIC_NAME);
+		System.out.println(tassertBoxPlotData);
+
+		// Task 2 : filtering metric data
+		Collections.sort(testClassesMetricsData, TLOC_COMPARATOR);
+		List<TestClassMetricsData> tlocTassertCleanList = testClassesMetricsData.stream()
+				.filter(x -> x.getTloc() <= tlocBoxPlotData.getLimiteSuperieur())
+				.filter(y -> y.getTassert() <= tassertBoxPlotData.getLimiteSuperieur()).collect(Collectors.toList());
+		FileWriter writer = new FileWriter("tlocTassertFilteredData.csv");
+		writer.write("class,TLOC,TASSERT\n");
+		for (TestClassMetricsData t : tlocTassertCleanList)
+			writer.write(String.format("%s,%d,%d\n", t.getClassName(), (int) t.getTloc(), (int) t.getTassert()));
+		writer.close();
+
+		Collections.sort(testClassesMetricsData, WMC_COMPARATOR);
+		List<TestClassMetricsData> wmcTassertCleanList = testClassesMetricsData.stream()
+				.filter(x -> x.getWmc() <= wmcBoxPlotData.getLimiteSuperieur())
+				.filter(y -> y.getTassert() <= tassertBoxPlotData.getLimiteSuperieur()).collect(Collectors.toList());
+		FileWriter writer1 = new FileWriter("wmcTassertFilteredData.csv");
+		writer1.write("class,WMC,TASSERT\n");
+		for (TestClassMetricsData t : wmcTassertCleanList)
+			writer1.write(String.format("%s,%d,%d\n", t.getClassName(), (int) t.getWmc(), (int) t.getTassert()));
+		writer1.close();
+
 	}
 
-	public static void printMoustacheBoxData(List<TestClassMetricsData> testClassesMetricsData, String metricName) {
+	public static MetricBoxPlotData printMoustacheBoxData(List<TestClassMetricsData> testClassesMetricsData,
+			String metricName) {
 		int medianeIndex = testClassesMetricsData.size() / 2;
 		int quartileInferieurIndex = medianeIndex - (testClassesMetricsData.size() / 4) - 1;
 		int quartileSuperieurIndex = medianeIndex + (testClassesMetricsData.size() / 4) + 1;
@@ -65,11 +96,8 @@ public class MustacheBoxCalculator {
 		double limiteSuperieur = quartileSuperieurValue + LIMIT_CONST * longueurBoite;
 		double limiteInferieur = quartileInferieurValue - +LIMIT_CONST * longueurBoite;
 		limiteInferieur = limiteInferieur < 0 ? 0 : limiteInferieur;
-		System.out.printf("%s mediane value : %f\n", metricName, medianeValue);
-		System.out.printf("%s quartile inferieur value : %f\n", metricName, quartileInferieurValue);
-		System.out.printf("%s quartile superieur value : %f\n", metricName, quartileSuperieurValue);
-		System.out.printf("%s limite inferieur value : %f\n", metricName, limiteInferieur);
-		System.out.printf("%s limite superieur value : %f\n\n\n", metricName, limiteSuperieur);
+		return new MetricBoxPlotData(metricName, medianeValue, limiteSuperieur, limiteInferieur, quartileSuperieurValue,
+				quartileInferieurValue);
 	}
 
 	public static double getMetricVal(TestClassMetricsData classMetricContainer, String metricName) {
