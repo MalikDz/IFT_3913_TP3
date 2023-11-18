@@ -18,6 +18,7 @@ Lien vers notre répertoire Git : https://github.com/MalikDz/IFT_3913_TP3
 Lien vers IntelliJ pour Windows : https://www.jetbrains.com/idea/download/?section=windows
 Lien vers Eclipse IDE : https://www.eclipse.org/downloads/packages/installer
 Lien vers Datatab : https://datatab.net/
+Lien vers Statistics Kingdom : https://www.statskingdom.com/
 
 
 Pour utiliser MustacheBoxCalculator.jar, le fichier .csv à analyser (jfreechart-test-stats.csv) doit être placé dans le même 
